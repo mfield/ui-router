@@ -448,8 +448,8 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $
    */
   // $urlRouter is injected just to ensure it gets instantiated
   this.$get = $get;
-  $get.$inject = ['$rootScope', '$q', '$view', '$injector', '$resolve', '$stateParams', '$location', '$urlRouter'];
-  function $get(   $rootScope,   $q,   $view,   $injector,   $resolve,   $stateParams,   $location,   $urlRouter) {
+  $get.$inject = ['$rootScope', '$q', '$view', '$injector', '$resolve', '$stateParams', '$location', '$urlRouter', '$browser'];
+  function $get(   $rootScope,   $q,   $view,   $injector,   $resolve,   $stateParams,   $location,   $urlRouter,   $browser) {
 
     var TransitionSuperseded = $q.reject(new Error('transition superseded'));
     var TransitionPrevented = $q.reject(new Error('transition prevented'));
@@ -830,6 +830,16 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $
       if (!$locationProvider.html5Mode() && url) {
         url = "#" + $locationProvider.hashPrefix() + url;
       }
+
+      var base = $browser.baseHref();
+      if (base !== '/') {
+        if ($locationProvider.html5Mode()) {
+          url = base.slice(0, -1) + url;
+        } else if (options.absolute){
+          url = base.slice(1) + url;
+        }
+      }
+
       if (options.absolute && url) {
         url = $location.protocol() + '://' + 
               $location.host() + 
