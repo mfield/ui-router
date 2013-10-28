@@ -456,6 +456,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $
     var TransitionAborted = $q.reject(new Error('transition aborted'));
     var TransitionFailed = $q.reject(new Error('transition failed'));
     var currentLocation = $location.url();
+    var baseHref = $browser.baseHref();
 
     function syncUrl() {
       if ($location.url() !== currentLocation) {
@@ -831,12 +832,11 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $
         url = "#" + $locationProvider.hashPrefix() + url;
       }
 
-      var base = $browser.baseHref();
-      if (base !== '/') {
+      if (baseHref !== '/') {
         if ($locationProvider.html5Mode()) {
-          url = base.slice(0, -1) + url;
+          url = baseHref.slice(0, -1) + url;
         } else if (options.absolute){
-          url = base.slice(1) + url;
+          url = baseHref.slice(1) + url;
         }
       }
 
