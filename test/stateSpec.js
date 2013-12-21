@@ -634,6 +634,22 @@ describe('state', function () {
     }));
   });
 
+  describe('.href() with baseHref', function() {
+    beforeEach(inject(function($browser) {
+        spyOn($browser, 'baseHref').andCallFake(function() {
+            return '/base/';
+        });
+    }));
+
+    it('prepends the base url when absolute or html5 is true', inject(function($state) {
+      expect($state.href("home")).toEqual("#/");
+      expect($state.href("home", null, { absolute: true })).toEqual("http://server/base/#/");
+      locationProvider.html5Mode(true);
+      expect($state.href("home")).toEqual("/base/");
+      expect($state.href("home", null, { absolute: true })).toEqual("http://server/base/");
+    }));
+  });
+
   describe('.get()', function () {
     it("should return the state's config", inject(function ($state) {
       expect($state.get('home').url).toBe('/');
